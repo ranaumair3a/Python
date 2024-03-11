@@ -34,6 +34,5 @@ def main():
     # Run the bot until you press Ctrl-C
     updater.idle()
 
-if __name__ == '__main__':
-    main()
-    
+# The variable `handler` serves as the entry point for the serverless function
+handler = main()
