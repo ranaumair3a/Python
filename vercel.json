@@ -2,7 +2,7 @@
   "name": "pdf-to-text-converter",
   "version": 2,
   "builds": [
-    { "src": "*.py", "use": "@vercel/python", "config": { "runtime": "python3.9" } }
+    { "src": "*.py", "use": "@vercel/python", "config": { "runtime": "python3.11" } }
   ],
   "routes": [
     { "src": "/(.*)", "dest": "/index.py" }
