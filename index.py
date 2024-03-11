@@ -1,42 +1,39 @@
-import requests
-import PyPDF2
-from http.server import BaseHTTPRequestHandler
+from telegram.ext import Updater, MessageHandler, Filters, CommandHandler
+from telegram import ChatAction
 
-# Function to convert PDF to text
-def pdf_to_text(pdf_url):
-    try:
-        # Download the PDF file
-        response = requests.get(pdf_url)
-        pdf_data = response.content
-        
-        # Open the PDF file and extract text
-        pdf_reader = PyPDF2.PdfFileReader(pdf_data)
-        text = ""
-        for page_num in range(pdf_reader.numPages):
-            text += pdf_reader.getPage(page_num).extractText()
-        
-        return text
-    except Exception as e:
-        print("Error:", e)
-        return None
+# Function to handle the /start command
+def start(update, context):
+    update.message.reply_text("Welcome to the bot! I will send a welcome message whenever someone joins the chat.")
 
-def handler(request, context):
-    # Ignore requests for favicon
-    if request["path"] == "/favicon.ico":
-        return {"statusCode": 404}
+# Function to handle new chat members
+def new_chat_members(update, context):
+    for member in update.message.new_chat_members:
+        update.message.reply_text(f"Welcome, {member.first_name}!")
+
+# Function to handle all other messages
+def echo(update, context):
+    update.message.reply_text("I'm a simple bot. I only respond to the /start command and greet new members.")
+
+def main():
+    # Create the Updater and pass it your bot's token
+    updater = Updater("6053910794:AAH-osc8S1c1N9q4q_uIgAzxe7JBPLJVXVI", use_context=True)
+
+    # Get the dispatcher to register handlers
+    dp = updater.dispatcher
+
+    # Register command handlers
+    dp.add_handler(CommandHandler("start", start))
+
+    # Register message handlers
+    dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, new_chat_members))
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+
+    # Start the Bot
+    updater.start_polling()
+
+    # Run the bot until you press Ctrl-C
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
     
-    # URL of the PDF file to convert
-    pdf_url = "https://mr-umair.000webhostapp.com/new-pdf.pdf"
-
-    # Convert PDF to text and return the result
-    result = pdf_to_text(pdf_url)
-    if result:
-        return {
-            "statusCode": 200,
-            "body": result
-        }
-    else:
-        return {
-            "statusCode": 500,
-            "body": "PDF to text conversion failed."
-        }
