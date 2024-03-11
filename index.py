@@ -20,6 +20,10 @@ def pdf_to_text(pdf_url):
         return None
 
 def handler(request):
+    # Ignore requests for favicon
+    if request.path == "/favicon.ico":
+        return {"statusCode": 404}
+    
     # URL of the PDF file to convert
     pdf_url = "https://mr-umair.000webhostapp.com/new-pdf.pdf"
 
