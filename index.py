@@ -6,29 +6,33 @@ def pdf_to_text(pdf_url):
     try:
         # Download the PDF file
         response = requests.get(pdf_url)
-        with open("temp.pdf", "wb") as pdf_file:
-            pdf_file.write(response.content)
+        pdf_data = response.content
         
         # Open the PDF file and extract text
-        with open("temp.pdf", "rb") as pdf_file:
-            pdf_reader = PyPDF2.PdfFileReader(pdf_file)
-            text = ""
-            for page_num in range(pdf_reader.numPages):
-                text += pdf_reader.getPage(page_num).extractText()
+        pdf_reader = PyPDF2.PdfFileReader(pdf_data)
+        text = ""
+        for page_num in range(pdf_reader.numPages):
+            text += pdf_reader.getPage(page_num).extractText()
         
         return text
     except Exception as e:
         print("Error:", e)
         return None
 
-# URL of the PDF file to convert
-pdf_url = "https://mr-umair.000webhostapp.com/new-pdf.pdf"
+def handler(request):
+    # URL of the PDF file to convert
+    pdf_url = "https://mr-umair.000webhostapp.com/new-pdf.pdf"
 
-# Convert PDF to text and display the result
-result = pdf_to_text(pdf_url)
-if result:
-    print("PDF to text conversion result:")
-    print(result)
-else:
-    print("PDF to text conversion failed.")
-    
+    # Convert PDF to text and return the result
+    result = pdf_to_text(pdf_url)
+    if result:
+        return {
+            "statusCode": 200,
+            "body": result
+        }
+    else:
+        return {
+            "statusCode": 500,
+            "body": "PDF to text conversion failed."
+        }
+        
