@@ -31,3 +31,4 @@ if result:
     print(result)
 else:
     print("PDF to text conversion failed.")
+    
