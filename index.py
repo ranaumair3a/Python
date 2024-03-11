@@ -1,5 +1,6 @@
 import requests
 import PyPDF2
+from http.server import BaseHTTPRequestHandler
 
 # Function to convert PDF to text
 def pdf_to_text(pdf_url):
@@ -19,9 +20,9 @@ def pdf_to_text(pdf_url):
         print("Error:", e)
         return None
 
-def handler(request):
+def handler(request, context):
     # Ignore requests for favicon
-    if request.path == "/favicon.ico":
+    if request["path"] == "/favicon.ico":
         return {"statusCode": 404}
     
     # URL of the PDF file to convert
@@ -39,4 +40,3 @@ def handler(request):
             "statusCode": 500,
             "body": "PDF to text conversion failed."
         }
-        
